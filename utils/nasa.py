@@ -1,7 +1,7 @@
-# utils/nasa.py
+
 import requests
 import pandas as pd
-import io  # ✅ import this
+import io  
 
 TAP_BASE = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
 
@@ -17,6 +17,5 @@ def fetch_koi_dataframe():
     r = requests.get(url, timeout=60)
     r.raise_for_status()
 
-    # ✅ use io.StringIO to read CSV from text
     df = pd.read_csv(io.StringIO(r.text))
     return df

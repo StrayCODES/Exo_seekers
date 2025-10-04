@@ -1,17 +1,17 @@
-# train_model.py
 import json
 import pandas as pd
 import numpy as np
 from pathlib import Path
+
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score, brier_score_loss
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.pipeline import Pipeline
 import joblib
 
-from utils.nasa import fetch_koi_dataframe
+from utils.nasa import fetch_koi_dataframe  # unchanged
 
 MODEL_DIR = Path("model")
 MODEL_DIR.mkdir(exist_ok=True, parents=True)
@@ -22,7 +22,6 @@ FEATURES = [
 ]
 
 def clean_and_label(df: pd.DataFrame):
-    # Keep only definite labels; drop "CANDIDATE/NOT DISPOSITIONED"
     df = df[df["koi_disposition"].isin(["CONFIRMED", "FALSE POSITIVE"])].copy()
     df["label"] = (df["koi_disposition"] == "CONFIRMED").astype(int)
     return df
@@ -39,15 +38,22 @@ def main():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    pipe = Pipeline([
+    # Build a valid pipeline: transformer(s) -> final estimator
+    base = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.08)
+    calibrated = CalibratedClassifierCV(base, cv=3, method="isotonic")
+
+    pipe = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="median")),
-        ("scaler", StandardScaler()),
-        ("clf", LogisticRegression(max_iter=1000))
+        ("clf", calibrated)  # final step can be a classifier
     ])
 
     pipe.fit(X_train, y_train)
     y_pred = pipe.predict(X_test)
+    y_proba = pipe.predict_proba(X_test)[:, 1]
+
     print(classification_report(y_test, y_pred, digits=3))
+    print(f"Accuracy: {accuracy_score(y_test, y_pred):.3f}")
+    print(f"Brier score (lower is better): {brier_score_loss(y_test, y_proba):.4f}")
 
     # Save artifacts
     joblib.dump(pipe, MODEL_DIR/"model.pkl")
