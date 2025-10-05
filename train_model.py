@@ -11,7 +11,7 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.pipeline import Pipeline
 import joblib
 
-from utils.nasa import fetch_koi_dataframe  # unchanged
+from utils.nasa import fetch_koi_dataframe  
 
 MODEL_DIR = Path("model")
 MODEL_DIR.mkdir(exist_ok=True, parents=True)
@@ -38,13 +38,13 @@ def main():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # Build a valid pipeline: transformer(s) -> final estimator
+    # transformer(s) -> final estimator
     base = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.08)
     calibrated = CalibratedClassifierCV(base, cv=3, method="isotonic")
 
     pipe = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="median")),
-        ("clf", calibrated)  # final step can be a classifier
+        ("clf", calibrated) 
     ])
 
     pipe.fit(X_train, y_train)
@@ -55,7 +55,7 @@ def main():
     print(f"Accuracy: {accuracy_score(y_test, y_pred):.3f}")
     print(f"Brier score (lower is better): {brier_score_loss(y_test, y_proba):.4f}")
 
-    # Save artifacts
+    
     joblib.dump(pipe, MODEL_DIR/"model.pkl")
     (MODEL_DIR/"feature_columns.json").write_text(json.dumps(FEATURES, indent=2))
     print("Saved model to model/model.pkl")

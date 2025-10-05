@@ -10,12 +10,12 @@ from pathlib import Path
 from utils.transit import bls_search
 from utils.orbit import semimajor_axis_au, ellipse_xyz
 
-# --- Sidebar / Title ---
+# Sidebar / Title
 st.set_page_config(page_title="Exo-Seeker", page_icon="🪐", layout="wide")
 st.title("🪐 Exo-Seeker")
 st.caption("Exoplanet exploration using NASA dataset")
 
-# --- Load model ---
+# Load model
 MODEL_PATH = Path("model/model.pkl")
 FEAT_PATH = Path("model/feature_columns.json")
 model = None
@@ -24,10 +24,10 @@ if MODEL_PATH.exists() and FEAT_PATH.exists():
     model = joblib.load(MODEL_PATH)
     features = json.loads(FEAT_PATH.read_text())
 
-# --- Tabs ---
+# Tabs
 tab1, tab2, tab3 = st.tabs(["Explore & Predict", "Upload Light Curve", "3D Orbit"])
 
-# ---------- Tab 1: Explore & Predict ----------
+# Tab 1: Explore & Predict
 with tab1:
     st.subheader("Estimate how likely a candidate is a planet")
     st.write("Enter features (from NASA KOI/PS tables) or try the defaults.")
@@ -80,7 +80,7 @@ with tab1:
         pred = "Likely a planet" if prob >= 0.5 else "Unlikely a planet"
         st.success(f"**{pred}** — Estimated probability: **{prob:.2f}**")
     
-# ---------- Tab 2: Upload Light Curve ----------
+# Tab 2: Light Curve
 with tab2:
     st.subheader("Find transits in a light curve")
     st.write("Upload a CSV with columns **time, flux** (brightness vs time), or load our sample.")
