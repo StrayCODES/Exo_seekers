@@ -32,7 +32,7 @@ tab1, tab2, tab3 = st.tabs(["Explore & Predict", "Upload Light Curve", "3D Orbit
 # Tab 1: Explore & Predict
 with tab1:
     st.subheader("Estimate how likely a candidate is a planet")
-    st.write("Enter features (from NASA KOI/PS tables) or try the defaults.")
+    st.write("Enter features from NASA's archive or try random dataset.")
 
     col1, col2 = st.columns([2,1])
 
