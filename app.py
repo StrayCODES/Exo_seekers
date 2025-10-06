@@ -36,14 +36,14 @@ with tab1:
 
     with col1:
         default_row = {
-            "Orbital period (days)": 10.0,
-            "Planet radius (Earth radii)": 1.5,
-            "Signal-to-noise (model)": 10.0,
-            "Transit depth (ppm)": 500.0,
-            "Transit duration (hours)": 3.0,
-            "Star temperature (K)": 5700.0,
-            "Star surface gravity (log g)": 4.4,
-            "Star radius (Solar radii)": 1.0
+            "Orbital period (days)": 9.48,
+            "Planet radius (Earth radii)": 2.26,
+            "Signal-to-noise (model)": 35.8,
+            "Transit depth (ppm)": 615.8,
+            "Transit duration (hours)": 2.95,
+            "Star temperature (K)": 5455.0,
+            "Star surface gravity (log g)": 446,
+            "Star radius (Solar radii)": .93
         }
         ui_to_feat = {
         "Orbital period (days)": "koi_period",

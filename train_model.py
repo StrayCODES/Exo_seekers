@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import classification_report, accuracy_score, brier_score_loss
 from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.pipeline import Pipeline
 import joblib
@@ -40,6 +41,7 @@ def main():
 
     # transformer(s) -> final estimator
     base = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.08)
+    #base = LogisticRegression(max_iter=1000, class_weight="balanced")
     calibrated = CalibratedClassifierCV(base, cv=3, method="isotonic")
 
     pipe = Pipeline(steps=[
