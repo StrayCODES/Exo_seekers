@@ -24,6 +24,8 @@ if MODEL_PATH.exists() and FEAT_PATH.exists():
     model = joblib.load(MODEL_PATH)
     features = json.loads(FEAT_PATH.read_text())
 
+
+
 # Tabs
 tab1, tab2, tab3 = st.tabs(["Explore & Predict", "Upload Light Curve", "3D Orbit"])
 
@@ -77,8 +79,9 @@ with tab1:
         row = {ui_to_feat[k]: v for k, v in inputs.items()}
         X = pd.DataFrame([row])
         prob = float(model.predict_proba(X)[0,1])
-        pred = "Likely a planet" if prob >= 0.5 else "Unlikely a planet"
-        st.success(f"**{pred}** — Estimated probability: **{prob:.2f}**")
+        pred = "Likely a planet" if prob >= 0.8 else "Unlikely a planet"
+        st.success(f"**{pred}** : Probability: **{prob:.2f}** | Threshold 0.8")
+
     
 # Tab 2: Light Curve
 with tab2:
